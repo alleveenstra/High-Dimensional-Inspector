@@ -1,7 +1,7 @@
 cmake_minimum_required (VERSION 2.8.11)
 project (HighDimInspector)
 
-option(APP_TDD "Build TDD" OFF)
+option(APP_TDD "Build TDD" ON)
 option(APP_COMMAND_LINE "Build command line tools" OFF)
 option(APP_VISUAL_TESTS "Build visual tests" OFF)
 
@@ -15,6 +15,8 @@ add_subdirectory (hdi/visualization)
 #########################################
 ########### APPLICATIONS ################
 #########################################
+
+add_subdirectory (applications/pyhdi)
 
 if(APP_TDD)
     add_subdirectory (applications/tdd)
