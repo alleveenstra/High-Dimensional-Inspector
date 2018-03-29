@@ -19,36 +19,62 @@ PyModule_AddObject(m, "PyHDIException", pPyHDIException);
 
 %{
 #define SWIG_FILE_WITH_INIT
-#include "libpyhdi.h"
+#include "hdi_wrapper.h"
 static PyObject* pPyHDIException;
 %}
 
 %include "numpy.i"
 %include "exception.i"
 
-void set_n_points(unsigned int value);
+class HDI_Parameters {
+public:
+    void set_n_points(unsigned int value);
 
-%apply (double* INPLACE_ARRAY2, int DIM1, int DIM2) {(double *xx, unsigned int n_points, unsigned int dimensions)};
-void set_input(double *xx, unsigned int n_points, unsigned int dimensions);
+    %apply (double* INPLACE_ARRAY2, int DIM1, int DIM2) {(double *matrix, unsigned int n_points, unsigned int dimensions)};
+    void set_input(double *matrix, unsigned int n_points, unsigned int dimensions);
 
-%apply (double* INPLACE_ARRAY2, int DIM1, int DIM2) {(double *yy, unsigned int n_points, unsigned int dimensions)};
-void set_output(double *yy, unsigned int n_points, unsigned int dimensions);
+    %apply (double* INPLACE_ARRAY2, int DIM1, int DIM2) {(double *matrix, unsigned int n_points, unsigned int dimensions)};
+    void set_output(double *matrix, unsigned int n_points, unsigned int dimensions);
 
-void run_tsne(double perplexity,
-              int seed,
-              double minimum_gain,
-              double eta,
-              double momentum,
-              double final_momentum,
-              double mom_switching_iter,
-              double exaggeration_factor,
-              unsigned int remove_exaggeration_iter,
-              unsigned int iterations);
+    void set_perplexity(double value);
 
-void run_asne(double perplexity,
-              double theta,
-              unsigned int exaggeration_iter,
-              unsigned int iterations);
+    void set_seed(int value);
+
+    void set_minimum_gain(double value);
+
+    void set_eta(double value);
+
+    void set_theta(double value);
+
+    void set_momentum(double value);
+
+    void set_final_momentum(double value);
+
+    void set_mom_switching_iter(double value);
+
+    void set_exaggeration_factor(double value);
+
+    void set_remove_exaggeration_iter(unsigned int value);
+
+    friend class HDI_tSNE;
+    friend class HDI_aSNE;
+};
+
+class HDI_tSNE {
+public:
+    HDI_Parameters &parameters();
+
+    void run(unsigned int iterations);
+
+};
+
+class HDI_aSNE {
+public:
+    HDI_Parameters &parameters();
+
+    void run(unsigned int iterations);
+
+};
 
 %pythoncode %{
     PyHDIException = _pyhdi.PyHDIException

@@ -11,78 +11,106 @@
 
 #include "hdi_wrapper.h"
 
-unsigned int n_points = 0;
-unsigned int source_dimensions = 0;
-unsigned int target_dimensions = 0;
-double *source = nullptr;
-double *target = nullptr;
 
 PyHDIException::PyHDIException(const std::string &__arg) : runtime_error(__arg) {}
 
-void set_n_points(unsigned int value) {
-    n_points = value;
+void HDI_Parameters::set_n_points(unsigned int value) {
+    _n_points = value;
 }
 
-void set_input(double *xx, unsigned int n_input_points, unsigned int dimensions) {
-    if (n_points == 0) {
+void HDI_Parameters::set_input(double *matrix, unsigned int n_input_points, unsigned int dimensions) {
+    if (_n_points == 0) {
         throw PyHDIException("call set_n_points() before set_input()");
     }
-    if (n_input_points != n_points) {
+    if (n_input_points != _n_points) {
         std::stringstream fmt;
-        fmt << "n_points not equal to matrix n_input_points, " << n_points << " != " << n_input_points;
+        fmt << "n_points not equal to matrix n_input_points, " << _n_points << " != " << n_input_points;
         throw PyHDIException(fmt.str());
     }
-    source = xx;
-    source_dimensions = dimensions;
+    _source = matrix;
+    _source_dimensions = dimensions;
 }
 
-void set_output(double *yy, unsigned int n_output_points, unsigned int dimensions) {
-    if (n_points == 0) {
+void HDI_Parameters::set_output(double *matrix, unsigned int n_output_points, unsigned int dimensions) {
+    if (_n_points == 0) {
         throw PyHDIException("call set_n_points() before set_output()");
     }
-    if (n_output_points != n_points) {
+    if (n_output_points != _n_points) {
         std::stringstream fmt;
-        fmt << "n_points not equal to matrix n_output_points, " << n_points << " != " << n_output_points;
+        fmt << "n_points not equal to matrix n_output_points, " << _n_points << " != " << n_output_points;
         throw PyHDIException(fmt.str());
     }
-    target = yy;
-    target_dimensions = dimensions;
+    _target = matrix;
+    _target_dimensions = dimensions;
 }
 
-void run_tsne(
-        double perplexity,
-        int seed,
-        double minimum_gain,
-        double eta,
-        double momentum,
-        double final_momentum,
-        double mom_switching_iter,
-        double exaggeration_factor,
-        unsigned int remove_exaggeration_iter,
-        unsigned int iterations
-) {
+void HDI_Parameters::set_perplexity(double value) {
+    _perplexity = value;
+}
+
+void HDI_Parameters::set_seed(int value) {
+    _seed = value;
+}
+
+void HDI_Parameters::set_minimum_gain(double value) {
+    _minimum_gain = value;
+}
+
+void HDI_Parameters::set_eta(double value) {
+    _eta = value;
+}
+
+void HDI_Parameters::set_momentum(double value) {
+    _momentum = value;
+}
+
+void HDI_Parameters::set_final_momentum(double value) {
+    _final_momentum = value;
+}
+
+void HDI_Parameters::set_mom_switching_iter(double value) {
+    _mom_switching_iter = value;
+}
+
+void HDI_Parameters::set_exaggeration_factor(double value) {
+    _exaggeration_factor = value;
+}
+
+void HDI_Parameters::set_remove_exaggeration_iter(unsigned int value) {
+    _remove_exaggeration_iter = value;
+}
+
+void HDI_Parameters::set_theta(double value) {
+    _theta = value;
+}
+
+HDI_Parameters & HDI_tSNE::parameters() {
+    return _parameters;
+}
+
+void HDI_tSNE::run(unsigned int iterations) {
     hdi::dr::TSNE<double> tSNE;
 
     hdi::utils::CoutLog coutLog;
     tSNE.setLogger(&coutLog);
 
-    tSNE.setDimensionality(source_dimensions);
+    tSNE.setDimensionality(_parameters._source_dimensions);
 
-    for (unsigned int n = 0; n < n_points; n++) {
-        tSNE.addDataPoint(source + n * source_dimensions);
+    for (unsigned int n = 0; n < _parameters._n_points; n++) {
+        tSNE.addDataPoint(_parameters._source + n * _parameters._source_dimensions);
     }
 
     hdi::dr::TSNE<double>::InitParams params;
-    params._perplexity = perplexity;
-    params._seed = seed;
-    params._embedding_dimensionality = target_dimensions;
-    params._minimum_gain = minimum_gain;
-    params._eta = eta;
-    params._momentum = momentum;
-    params._final_momentum = final_momentum;
-    params._mom_switching_iter = mom_switching_iter;
-    params._exaggeration_factor = exaggeration_factor;
-    params._remove_exaggeration_iter = static_cast<int>(remove_exaggeration_iter);
+    params._perplexity = _parameters._perplexity;
+    params._seed = _parameters._seed;
+    params._embedding_dimensionality = _parameters._target_dimensions;
+    params._minimum_gain = _parameters._minimum_gain;
+    params._eta = _parameters._eta;
+    params._momentum = _parameters._momentum;
+    params._final_momentum = _parameters._final_momentum;
+    params._mom_switching_iter = _parameters._mom_switching_iter;
+    params._exaggeration_factor = _parameters._exaggeration_factor;
+    params._remove_exaggeration_iter = static_cast<int>(_parameters._remove_exaggeration_iter);
 
     hdi::data::Embedding<double> embedding_container;
     tSNE.initialize(&embedding_container, params);
@@ -97,35 +125,38 @@ void run_tsne(
     std::cout << "... done" << std::endl;
 
     std::vector<double> &embedding = embedding_container.getContainer();
-    std::copy(embedding.begin(), embedding.end(), target);
+    std::copy(embedding.begin(), embedding.end(), _parameters._target);
 }
 
+HDI_Parameters & HDI_aSNE::parameters() {
+    return _parameters;
+}
 
-void run_asne(double perplexity, double theta, unsigned int exaggeration_iter, unsigned int iterations) {
-    std::vector<float> source_f(source, source + n_points * source_dimensions);
+void HDI_aSNE::run(unsigned int iterations) {
+    std::vector<float> source_f(_parameters._source, _parameters._source + _parameters._n_points * _parameters._source_dimensions);
 
     hdi::dr::HDJointProbabilityGenerator<float>::Parameters prob_gen_param;
-    prob_gen_param._perplexity = static_cast<float>(perplexity);
+    prob_gen_param._perplexity = static_cast<float>(_parameters._perplexity);
 
     hdi::dr::HDJointProbabilityGenerator<float>::sparse_scalar_matrix_type distributions;
 
     hdi::dr::HDJointProbabilityGenerator<float> prob_gen;
     prob_gen.computeProbabilityDistributions(source_f.data(),
-                                             source_dimensions,
-                                             n_points,
+                                             _parameters._source_dimensions,
+                                             _parameters._n_points,
                                              distributions,
                                              prob_gen_param);
 
     hdi::dr::SparseTSNEUserDefProbabilities<float>::Parameters tSNE_param;
-    tSNE_param._embedding_dimensionality = static_cast<int>(target_dimensions);
-    tSNE_param._mom_switching_iter = exaggeration_iter;
-    tSNE_param._remove_exaggeration_iter = exaggeration_iter;
+    tSNE_param._embedding_dimensionality = static_cast<int>(_parameters._target_dimensions);
+    tSNE_param._mom_switching_iter = _parameters._mom_switching_iter;
+    tSNE_param._remove_exaggeration_iter = _parameters._remove_exaggeration_iter;
 
     hdi::data::Embedding<float> embedding_container;
 
     hdi::dr::SparseTSNEUserDefProbabilities<float> tSNE;
     tSNE.initialize(distributions, &embedding_container, tSNE_param);
-    tSNE.setTheta(theta);
+    tSNE.setTheta(_parameters._theta);
 
     std::cout << "Computing gradient descent..." << std::endl;
     for (unsigned int iter = 0; iter < iterations; ++iter){
@@ -134,7 +165,7 @@ void run_asne(double perplexity, double theta, unsigned int exaggeration_iter, u
     std::cout << "... done" << std::endl;
 
     std::vector<float> &embedding = embedding_container.getContainer();
-    std::copy(embedding.begin(), embedding.end(), target);
+    std::copy(embedding.begin(), embedding.end(), _parameters._target);
 
 }
 
