@@ -77,5 +77,5 @@ public:
 };
 
 %pythoncode %{
-    PyHDIException = _pyhdi.PyHDIException
+PyHDIException = _pyhdi.PyHDIException
 %}

@@ -14,8 +14,9 @@ swig_link_libraries(pyhdi hdi_wrapper ${PYTHON_LIBRARIES})
 
 # Files to install with Python
 set(PYTHON_INSTALL_FILES
-        ${CMAKE_CURRENT_BINARY_DIR}/pyhdi.py
-        ${CMAKE_CURRENT_BINARY_DIR}/_pyhdi.so)
+        pyhdi_sklearn.py
+        pyhdi.py
+        _pyhdi.so)
 
 # Configure setup.py and copy to output directory
 set(SETUP_PY_IN ${CMAKE_CURRENT_SOURCE_DIR}/setup.py.in)

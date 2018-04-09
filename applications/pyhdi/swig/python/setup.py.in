@@ -26,11 +26,10 @@ class CompiledLibInstall(setuptools.command.install.install):
 if __name__ == '__main__':
     setuptools.setup(
         name='pyhdi',
-        version='0.0.1-dev',
+        version='0.0.1',
         packages=['pyhdi'],
         license='MIT',
         author='Alle Veenstra',
         author_email='alle.veenstra@gmail.com',
         cmdclass={'install': CompiledLibInstall}
     )
-
