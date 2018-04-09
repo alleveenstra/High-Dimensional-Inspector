@@ -1,4 +1,6 @@
-%module pyhdi
+%module(directors="1") pyhdi
+
+%feature("director") HDI_Logger;
 
 %init %{
 import_array();
@@ -26,6 +28,12 @@ static PyObject* pPyHDIException;
 %include "numpy.i"
 %include "exception.i"
 
+class HDI_Logger {
+public:
+    virtual void log() = 0;
+    virtual ~HDI_Logger() {};
+};
+
 class HDI_Parameters {
 public:
     void set_n_points(unsigned int value);
@@ -35,6 +43,8 @@ public:
 
     %apply (double* INPLACE_ARRAY2, int DIM1, int DIM2) {(double *matrix, unsigned int n_points, unsigned int dimensions)};
     void set_output(double *matrix, unsigned int n_points, unsigned int dimensions);
+
+    void set_logger(HDI_Logger *logger);
 
     void set_perplexity(double value);
 

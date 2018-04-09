@@ -4,8 +4,14 @@ from sklearn.utils import check_array
 
 import pyhdi
 
+class Logger(pyhdi.HDI_Logger):
+    def __init__(self):
+        pyhdi.HDI_Logger.__init__(self)
 
-class HightDimensionalInspectorTSNE(BaseEstimator):
+    def log(self):
+        print('This print from Python:')
+
+class HighDimensionalInspectorTSNE(BaseEstimator):
     """t-distributed Stochastic Neighbor Embedding.
     """
 
@@ -26,21 +32,12 @@ class HightDimensionalInspectorTSNE(BaseEstimator):
         self.remove_exaggeration_iter = remove_exaggeration_iter
         self.theta = theta
 
-
-    def _fit(self, X):
-        """Fit the model using X as training data.
-
-        Parameters
-        ----------
-        X : ndarray, shape (n_samples, n_features) or (n_samples, n_samples)
-        """
-        X = check_array(X, accept_sparse=[], dtype=[np.double])
-
+    def _check_parameters(self):
         if self.method not in ["asne", "tsne"]:
             raise ValueError("'method' must be either 'tsne' or 'asne'")
 
-        if self.minimum_gain < 0.0 or self.minimum_gain > 1.0:
-            raise ValueError("'minimum_gain' must be between 0.0 - 1.0")
+        if not 0.0 < self.minimum_gain < 1.0:
+            raise ValueError("'minimum_gain' must be between 0.0 and 1.0")
 
         if self.exaggeration_factor < 1.0:
             raise ValueError("exaggeration_factor must be at least 1, but is {}".format(self.exaggeration_factor))
@@ -48,10 +45,22 @@ class HightDimensionalInspectorTSNE(BaseEstimator):
         if self.n_iter < 250:
             raise ValueError("n_iter should be at least 250")
 
+    def _fit(self, X):
+        """Fit the model using X as training data.
+
+        Parameters
+        ----------
+        X : ndarray, shape (n_samples, n_features)
+        """
+        X = check_array(X, accept_sparse=[], dtype=[np.double])
+
+        self._check_parameters()
+
         n_points = X.shape[0]
         embedding = np.asarray(np.zeros((n_points, self.n_components)), dtype=np.double)
 
         tsne = pyhdi.HDI_tSNE() if self.method == "tsne" else pyhdi.HDI_aSNE()
+        # tsne.parameters().set_logger(Logger())
         tsne.parameters().set_n_points(n_points)
         tsne.parameters().set_input(X)
         tsne.parameters().set_output(embedding)
@@ -69,14 +78,13 @@ class HightDimensionalInspectorTSNE(BaseEstimator):
 
         return embedding
 
-
     def fit_transform(self, X, y=None):
         """Fit X into an embedded space and return that transformed
         output.
 
         Parameters
         ----------
-        X : ndarray, shape (n_samples, n_features) or (n_samples, n_samples)
+        X : ndarray, shape (n_samples, n_features)
 
         y : Ignored.
 
@@ -89,13 +97,12 @@ class HightDimensionalInspectorTSNE(BaseEstimator):
         self.embedding_ = embedding
         return self.embedding_
 
-
     def fit(self, X, y=None):
         """Fit X into an embedded space.
 
         Parameters
         ----------
-        X : ndarray, shape (n_samples, n_features) or (n_samples, n_samples)
+        X : ndarray, shape (n_samples, n_features)
         y : Ignored.
         """
         self.fit_transform(X)

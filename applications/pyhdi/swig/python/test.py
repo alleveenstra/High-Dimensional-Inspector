@@ -1,4 +1,4 @@
-from pyhdi_sklearn import HightDimensionalInspectorTSNE
+from pyhdi_sklearn import HighDimensionalInspectorTSNE
 
 import numpy as np
 from sklearn.datasets import fetch_mldata
@@ -17,7 +17,7 @@ a = np.asarray(X, dtype=np.double)
 for i in range(a.shape[0]):
     a[i, 0] = i
 
-tsne = HightDimensionalInspectorTSNE(method="asne")
+tsne = HighDimensionalInspectorTSNE(method="asne")
 
 b = tsne.fit_transform(a)
 

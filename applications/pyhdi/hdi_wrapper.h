@@ -1,13 +1,23 @@
 #ifndef HDI_WRAPPER_H
 #define HDI_WRAPPER_H
 
+#include <netinet/in.h>
+
 class PyHDIException : public std::runtime_error {
 public:
-    explicit PyHDIException(const std::string &);
+    explicit PyHDIException(const std::string &__arg) : runtime_error(__arg){}
+};
+
+class HDI_Logger {
+public:
+    virtual void log() = 0;
+    virtual ~HDI_Logger() {};
 };
 
 class HDI_Parameters {
 protected:
+    HDI_Logger *_logger = nullptr;
+
     double *_source = nullptr;
     double *_target = nullptr;
     unsigned int _n_points = 0;
@@ -26,6 +36,8 @@ protected:
     double _theta = 0.5;
 
 public:
+    void set_logger(HDI_Logger *logger);
+
     void set_n_points(unsigned int value);
 
     void set_input(double *matrix, unsigned int n_points, unsigned int dimensions);
