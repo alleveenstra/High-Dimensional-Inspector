@@ -1,3 +1,6 @@
+#ifndef HDI_WRAPPER_H
+#define HDI_WRAPPER_H
+
 class PyHDIException : public std::runtime_error {
 public:
     explicit PyHDIException(const std::string &);
@@ -70,3 +73,5 @@ public:
     void run(unsigned int iterations);
 
 };
+
+#endif
