@@ -41,7 +41,19 @@ Reference to cite when you use HDI in a research paper:
 ```
 
 ## Building
-To Do!
+
+To build on Ubuntu ensure the necessary software and libraries are installed:
+
+```bash
+sudo apt install cmake qtbase5-dev libqt5webkit5-dev libqtwebkit-dev libflann-dev swig python-numpy
+```
+
+To compile, issue the following commands:
+
+```bash
+cmake .
+make
+```
 
 ## Tutorial
 To Do!

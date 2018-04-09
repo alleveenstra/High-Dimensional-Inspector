@@ -1,4 +1,4 @@
-from __init__ import HightDimensionalInspectorTSNE
+from pyhdi_sklearn import HightDimensionalInspectorTSNE
 
 import numpy as np
 from sklearn.datasets import fetch_mldata
@@ -23,4 +23,4 @@ b = tsne.fit_transform(a)
 
 import matplotlib.pyplot as plt
 plt.scatter(np.array(b[:, 0]), np.array(b[:, 1]), c=y)
-plt.savefig('asdf.png')
+plt.savefig('embedding.png')
