@@ -1,7 +1,7 @@
 #ifndef HDI_WRAPPER_H
 #define HDI_WRAPPER_H
 
-#include <netinet/in.h>
+#include <stdexcept>
 
 class PyHDIException : public std::runtime_error {
 public:
@@ -74,7 +74,6 @@ public:
     HDI_Parameters &parameters();
 
     void run(unsigned int iterations);
-
 };
 
 class HDI_aSNE {
@@ -83,7 +82,6 @@ public:
     HDI_Parameters &parameters();
 
     void run(unsigned int iterations);
-
 };
 
 #endif
