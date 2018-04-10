@@ -8,8 +8,8 @@ class Logger(pyhdi.HDI_Logger):
     def __init__(self):
         pyhdi.HDI_Logger.__init__(self)
 
-    def log(self):
-        print('This print from Python:')
+    def log(self, level, msg):
+        print(level, msg)
 
 class HighDimensionalInspectorTSNE(BaseEstimator):
     """t-distributed Stochastic Neighbor Embedding.
@@ -60,7 +60,7 @@ class HighDimensionalInspectorTSNE(BaseEstimator):
         embedding = np.asarray(np.zeros((n_points, self.n_components)), dtype=np.double)
 
         tsne = pyhdi.HDI_tSNE() if self.method == "tsne" else pyhdi.HDI_aSNE()
-        # tsne.parameters().set_logger(Logger())
+        tsne.parameters().set_logger(Logger().__disown__())
         tsne.parameters().set_n_points(n_points)
         tsne.parameters().set_input(X)
         tsne.parameters().set_output(embedding)
@@ -75,6 +75,7 @@ class HighDimensionalInspectorTSNE(BaseEstimator):
         tsne.parameters().set_remove_exaggeration_iter(self.remove_exaggeration_iter)
         tsne.parameters().set_theta(self.theta)
         tsne.run(self.n_iter)
+        tsne.parameters().del_logger()
 
         return embedding
 

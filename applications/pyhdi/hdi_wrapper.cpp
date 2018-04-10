@@ -15,6 +15,11 @@ void HDI_Parameters::set_logger(HDI_Logger *logger) {
     _logger = logger;
 }
 
+void HDI_Parameters::del_logger() {
+    delete _logger;
+    _logger = nullptr;
+}
+
 void HDI_Parameters::set_n_points(unsigned int value) {
     _n_points = value;
 }
@@ -117,12 +122,17 @@ void HDI_tSNE::run(unsigned int iterations) {
     tSNE.initialize(&embedding_container, params);
 
     if (_parameters._logger)
-        _parameters._logger->log(); //"Computing gradient descent...");
+        _parameters._logger->log(HDI_Logger::INFO, "Computing gradient descent...");
     for (unsigned int iter = 0; iter < iterations; ++iter) {
         tSNE.doAnIteration();
+        if (!(iter % 100) && _parameters._logger) {
+            std::stringstream fmt;
+            fmt << "iteration " << iter << "...";
+            _parameters._logger->log(HDI_Logger::INFO, fmt.str());
+        }
     }
     if (_parameters._logger)
-        _parameters._logger->log(); //"... done");
+        _parameters._logger->log(HDI_Logger::INFO, "... done");
 
     std::vector<double> &embedding = embedding_container.getContainer();
     std::copy(embedding.begin(), embedding.end(), _parameters._target);
@@ -159,12 +169,17 @@ void HDI_aSNE::run(unsigned int iterations) {
     tSNE.setTheta(_parameters._theta);
 
     if (_parameters._logger)
-        _parameters._logger->log(); //"Computing gradient descent...");
+        _parameters._logger->log(HDI_Logger::INFO, "Computing gradient descent...");
     for (unsigned int iter = 0; iter < iterations; ++iter) {
         tSNE.doAnIteration();
+        if (!(iter % 100) && _parameters._logger) {
+            std::stringstream fmt;
+            fmt << "iteration " << iter << "...";
+            _parameters._logger->log(HDI_Logger::INFO, fmt.str());
+        }
     }
     if (_parameters._logger)
-        _parameters._logger->log(); //"... done");
+        _parameters._logger->log(HDI_Logger::INFO, "... done");
 
     std::vector<float> &embedding = embedding_container.getContainer();
     std::copy(embedding.begin(), embedding.end(), _parameters._target);

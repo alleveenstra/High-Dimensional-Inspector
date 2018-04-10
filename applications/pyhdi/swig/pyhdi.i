@@ -25,12 +25,13 @@ PyModule_AddObject(m, "PyHDIException", pPyHDIException);
 static PyObject* pPyHDIException;
 %}
 
+%include "std_string.i"
 %include "numpy.i"
 %include "exception.i"
 
 class HDI_Logger {
 public:
-    virtual void log() = 0;
+    virtual void log(int level, std::string msg) = 0;
     virtual ~HDI_Logger() {};
 };
 
@@ -45,6 +46,8 @@ public:
     void set_output(double *matrix, unsigned int n_points, unsigned int dimensions);
 
     void set_logger(HDI_Logger *logger);
+
+    void del_logger();
 
     void set_perplexity(double value);
 
