@@ -4,9 +4,9 @@ from sklearn.utils import check_array
 
 import pyhdi
 
-class Logger(pyhdi.HDI_Logger):
+class Logger(pyhdi.HDILogger):
     def __init__(self):
-        pyhdi.HDI_Logger.__init__(self)
+        pyhdi.HDILogger.__init__(self)
 
     def log(self, level, msg):
         print(level, msg)
@@ -59,7 +59,7 @@ class HighDimensionalInspectorTSNE(BaseEstimator):
         n_points = X.shape[0]
         embedding = np.asarray(np.zeros((n_points, self.n_components)), dtype=np.double)
 
-        tsne = pyhdi.HDI_tSNE() if self.method == "tsne" else pyhdi.HDI_aSNE()
+        tsne = pyhdi.HDItSNE() if self.method == "tsne" else pyhdi.HDIaSNE()
         tsne.parameters().set_logger(Logger().__disown__())
         tsne.parameters().set_n_points(n_points)
         tsne.parameters().set_input(X)

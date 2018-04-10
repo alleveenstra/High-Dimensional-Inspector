@@ -1,6 +1,6 @@
 %module(directors="1") pyhdi
 
-%feature("director") HDI_Logger;
+%feature("director") HDILogger;
 
 %init %{
 import_array();
@@ -29,13 +29,13 @@ static PyObject* pPyHDIException;
 %include "numpy.i"
 %include "exception.i"
 
-class HDI_Logger {
+class HDILogger {
 public:
     virtual void log(int level, std::string msg) = 0;
-    virtual ~HDI_Logger() {};
+    virtual ~HDILogger() {};
 };
 
-class HDI_Parameters {
+class HDIParameters {
 public:
     void set_n_points(unsigned int value);
 
@@ -45,7 +45,7 @@ public:
     %apply (double* INPLACE_ARRAY2, int DIM1, int DIM2) {(double *matrix, unsigned int n_points, unsigned int dimensions)};
     void set_output(double *matrix, unsigned int n_points, unsigned int dimensions);
 
-    void set_logger(HDI_Logger *logger);
+    void set_logger(HDILogger *logger);
 
     void del_logger();
 
@@ -69,21 +69,21 @@ public:
 
     void set_remove_exaggeration_iter(unsigned int value);
 
-    friend class HDI_tSNE;
-    friend class HDI_aSNE;
+    friend class HDItSNE;
+    friend class HDIaSNE;
 };
 
-class HDI_tSNE {
+class HDItSNE {
 public:
-    HDI_Parameters &parameters();
+    HDIParameters &parameters();
 
     void run(unsigned int iterations);
 
 };
 
-class HDI_aSNE {
+class HDIaSNE {
 public:
-    HDI_Parameters &parameters();
+    HDIParameters &parameters();
 
     void run(unsigned int iterations);
 
