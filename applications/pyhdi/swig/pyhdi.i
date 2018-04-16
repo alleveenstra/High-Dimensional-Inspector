@@ -32,11 +32,15 @@ static PyObject* pPyHDIException;
 class HDILogger {
 public:
     virtual void log(int level, std::string msg) = 0;
-    virtual ~HDILogger() {};
+    HDILogger();
+    virtual ~HDILogger();
 };
 
 class HDIParameters {
 public:
+    HDIParameters();
+    ~HDIParameters();
+
     void set_n_points(unsigned int value);
 
     %apply (double* INPLACE_ARRAY2, int DIM1, int DIM2) {(double *matrix, unsigned int n_points, unsigned int dimensions)};
@@ -75,6 +79,9 @@ public:
 
 class HDItSNE {
 public:
+    HDItSNE();
+    ~HDItSNE();
+
     HDIParameters &parameters();
 
     void run(unsigned int iterations);
@@ -83,6 +90,9 @@ public:
 
 class HDIaSNE {
 public:
+    HDIaSNE();
+    ~HDIaSNE();
+
     HDIParameters &parameters();
 
     void run(unsigned int iterations);

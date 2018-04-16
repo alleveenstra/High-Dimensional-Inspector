@@ -11,7 +11,8 @@ public:
 class HDILogger {
 public:
     virtual void log(int level, std::string msg) = 0;
-    virtual ~HDILogger() {};
+    HDILogger() = default;
+    virtual ~HDILogger() = default;
     enum {
         INFO,
         WARNING,
@@ -41,6 +42,10 @@ protected:
     double _theta = 0.5;
 
 public:
+
+    HDIParameters() = default;
+    ~HDIParameters() = default;
+
     void set_logger(HDILogger *logger);
 
     void del_logger();
@@ -80,6 +85,9 @@ class HDItSNE {
 public:
     HDIParameters &parameters();
 
+    HDItSNE() = default;
+    ~HDItSNE() = default;
+
     void run(unsigned int iterations);
 };
 
@@ -87,6 +95,9 @@ class HDIaSNE {
     HDIParameters _parameters;
 public:
     HDIParameters &parameters();
+
+    HDIaSNE() = default;
+    ~HDIaSNE() = default;
 
     void run(unsigned int iterations);
 };
