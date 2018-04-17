@@ -43,33 +43,33 @@ public:
 
     void set_n_points(unsigned int value);
 
-    %apply (double* INPLACE_ARRAY2, int DIM1, int DIM2) {(double *matrix, unsigned int n_points, unsigned int dimensions)};
-    void set_input(double *matrix, unsigned int n_points, unsigned int dimensions);
+    %apply (float* INPLACE_ARRAY2, int DIM1, int DIM2) {(float *matrix, unsigned int n_points, unsigned int dimensions)};
+    void set_input(float *matrix, unsigned int n_points, unsigned int dimensions);
 
-    %apply (double* INPLACE_ARRAY2, int DIM1, int DIM2) {(double *matrix, unsigned int n_points, unsigned int dimensions)};
-    void set_output(double *matrix, unsigned int n_points, unsigned int dimensions);
+    %apply (float* INPLACE_ARRAY2, int DIM1, int DIM2) {(float *matrix, unsigned int n_points, unsigned int dimensions)};
+    void set_output(float *matrix, unsigned int n_points, unsigned int dimensions);
 
     void set_logger(HDILogger *logger);
 
     void del_logger();
 
-    void set_perplexity(double value);
+    void set_perplexity(float value);
 
     void set_seed(int value);
 
-    void set_minimum_gain(double value);
+    void set_minimum_gain(float value);
 
-    void set_eta(double value);
+    void set_eta(float value);
 
-    void set_theta(double value);
+    void set_theta(float value);
 
-    void set_momentum(double value);
+    void set_momentum(float value);
 
-    void set_final_momentum(double value);
+    void set_final_momentum(float value);
 
-    void set_mom_switching_iter(double value);
+    void set_mom_switching_iter(float value);
 
-    void set_exaggeration_factor(double value);
+    void set_exaggeration_factor(float value);
 
     void set_remove_exaggeration_iter(unsigned int value);
 

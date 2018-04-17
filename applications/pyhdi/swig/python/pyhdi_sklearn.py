@@ -52,12 +52,12 @@ class HighDimensionalInspectorTSNE(BaseEstimator):
         ----------
         X : ndarray, shape (n_samples, n_features)
         """
-        X = check_array(X, accept_sparse=[], dtype=[np.double])
+        X = check_array(X, accept_sparse=[], dtype=[np.float32])
 
         self._check_parameters()
 
         n_points = X.shape[0]
-        embedding = np.asarray(np.zeros((n_points, self.n_components)), dtype=np.double)
+        embedding = np.asarray(np.zeros((n_points, self.n_components)), dtype=np.float32)
 
         tsne = pyhdi.HDItSNE() if self.method == "tsne" else pyhdi.HDIaSNE()
         tsne.parameters().set_logger(Logger().__disown__())

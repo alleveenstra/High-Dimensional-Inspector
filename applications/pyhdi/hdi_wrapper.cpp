@@ -24,7 +24,7 @@ void HDIParameters::set_n_points(unsigned int value) {
     _n_points = value;
 }
 
-void HDIParameters::set_input(double *matrix, unsigned int n_input_points, unsigned int dimensions) {
+void HDIParameters::set_input(float *matrix, unsigned int n_input_points, unsigned int dimensions) {
     if (_n_points == 0) {
         throw PyHDIException("call set_n_points() before set_input()");
     }
@@ -37,7 +37,7 @@ void HDIParameters::set_input(double *matrix, unsigned int n_input_points, unsig
     _source_dimensions = dimensions;
 }
 
-void HDIParameters::set_output(double *matrix, unsigned int n_output_points, unsigned int dimensions) {
+void HDIParameters::set_output(float *matrix, unsigned int n_output_points, unsigned int dimensions) {
     if (_n_points == 0) {
         throw PyHDIException("call set_n_points() before set_output()");
     }
@@ -50,7 +50,7 @@ void HDIParameters::set_output(double *matrix, unsigned int n_output_points, uns
     _target_dimensions = dimensions;
 }
 
-void HDIParameters::set_perplexity(double value) {
+void HDIParameters::set_perplexity(float value) {
     _perplexity = value;
 }
 
@@ -58,27 +58,27 @@ void HDIParameters::set_seed(int value) {
     _seed = value;
 }
 
-void HDIParameters::set_minimum_gain(double value) {
+void HDIParameters::set_minimum_gain(float value) {
     _minimum_gain = value;
 }
 
-void HDIParameters::set_eta(double value) {
+void HDIParameters::set_eta(float value) {
     _eta = value;
 }
 
-void HDIParameters::set_momentum(double value) {
+void HDIParameters::set_momentum(float value) {
     _momentum = value;
 }
 
-void HDIParameters::set_final_momentum(double value) {
+void HDIParameters::set_final_momentum(float value) {
     _final_momentum = value;
 }
 
-void HDIParameters::set_mom_switching_iter(double value) {
+void HDIParameters::set_mom_switching_iter(float value) {
     _mom_switching_iter = value;
 }
 
-void HDIParameters::set_exaggeration_factor(double value) {
+void HDIParameters::set_exaggeration_factor(float value) {
     _exaggeration_factor = value;
 }
 
@@ -86,7 +86,7 @@ void HDIParameters::set_remove_exaggeration_iter(unsigned int value) {
     _remove_exaggeration_iter = value;
 }
 
-void HDIParameters::set_theta(double value) {
+void HDIParameters::set_theta(float value) {
     _theta = value;
 }
 
@@ -95,7 +95,7 @@ HDIParameters & HDItSNE::parameters() {
 }
 
 void HDItSNE::run(unsigned int iterations) {
-    hdi::dr::TSNE<double> tSNE;
+    hdi::dr::TSNE<float> tSNE;
 
     hdi::utils::CoutLog coutLog;
     tSNE.setLogger(&coutLog);
@@ -106,7 +106,7 @@ void HDItSNE::run(unsigned int iterations) {
         tSNE.addDataPoint(_parameters._source + n * _parameters._source_dimensions);
     }
 
-    hdi::dr::TSNE<double>::InitParams params;
+    hdi::dr::TSNE<float>::InitParams params;
     params._perplexity = _parameters._perplexity;
     params._seed = _parameters._seed;
     params._embedding_dimensionality = _parameters._target_dimensions;
@@ -118,7 +118,7 @@ void HDItSNE::run(unsigned int iterations) {
     params._exaggeration_factor = _parameters._exaggeration_factor;
     params._remove_exaggeration_iter = static_cast<int>(_parameters._remove_exaggeration_iter);
 
-    hdi::data::Embedding<double> embedding_container;
+    hdi::data::Embedding<float> embedding_container;
     tSNE.initialize(&embedding_container, params);
 
     if (_parameters._logger)
@@ -134,7 +134,7 @@ void HDItSNE::run(unsigned int iterations) {
     if (_parameters._logger)
         _parameters._logger->log(HDILogger::INFO, "... done");
 
-    std::vector<double> &embedding = embedding_container.getContainer();
+    std::vector<float> &embedding = embedding_container.getContainer();
     std::copy(embedding.begin(), embedding.end(), _parameters._target);
 }
 
@@ -146,7 +146,7 @@ void HDIaSNE::run(unsigned int iterations) {
     std::vector<float> source_f(_parameters._source, _parameters._source + _parameters._n_points * _parameters._source_dimensions);
 
     hdi::dr::HDJointProbabilityGenerator<float>::Parameters prob_gen_param;
-    prob_gen_param._perplexity = static_cast<float>(_parameters._perplexity);
+    prob_gen_param._perplexity = _parameters._perplexity;
 
     hdi::dr::HDJointProbabilityGenerator<float>::sparse_scalar_matrix_type distributions;
 

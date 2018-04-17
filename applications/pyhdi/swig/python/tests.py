@@ -18,7 +18,7 @@ class MyTest(unittest.TestCase):
 
         print(X.shape)
 
-        a = np.asarray(X, dtype=np.double)
+        a = np.asarray(X, dtype=np.float32)
 
         for i in range(a.shape[0]):
             a[i, 0] = i
