@@ -1,4 +1,4 @@
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -DQT_NO_VERSION_TAGGING")
 
 include_directories ("${CMAKE_SOURCE_DIR}")
 include_directories ("${CMAKE_CURRENT_BINARY_DIR}")
